@@ -1,0 +1,67 @@
+#!/bin/bash
+
+
+declare -i num_zwy=`find -name '[!.]*' -type f | wc -l`
+declare -i num_kat=`find -name '[!.]*' -type d | wc -l`
+declare -i num_dow=`find -name '[!.]*' -type l | wc -l`
+
+#sprawdzanie liczby argumentow
+if [[ $# -gt 3 || $# -lt 1 ]];then
+        echo "ERROR - nie poprawna liczba argumentow" >&2
+        exit 1
+fi
+
+#sprawdzanie czy poprawne argumenty
+for arg in $@
+do
+        if [[ ! $arg =~ ^[dlf]$ ]];then
+                echo "ERROR podano zly argument" >&2
+                exit 1
+        fi
+done
+files=`ls`
+
+#zliczenie wszystkich rodzajow
+
+
+for arg in $@
+do
+        case $arg in
+                f)
+                        echo "Plikow zwyklych:$num_zwy"
+                        ;;
+                l)
+                        echo "Dowiazan symbolicznych:$num_dow"
+                        ;;
+                d)
+                        echo "Katalogow:$num_kat"
+        esac
+
+done
+
+for arg in $@
+do
+        case $arg in
+                f)
+                        echo -n "Plikow zwyklych:"
+			myString=$(printf "%${num_zwy}s");echo ${myString// /+}
+			echo -n $myString
+
+                        ;;
+                l)
+                        echo -n "Dowiazan symbolicznych:"
+			myString=$(printf "%${num_dow}s");echo ${myString// /+}
+                        echo -n $myString
+
+                        ;;
+                d)
+                        echo -n "Katalogow"
+			myString=$(printf "%${num_kat}s");echo ${myString// /+}
+                        echo -n $myString
+
+                        ;;
+
+        esac
+done
+exit 0
+
