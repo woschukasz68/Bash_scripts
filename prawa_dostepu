@@ -1,0 +1,32 @@
+#!/bin/bash
+
+
+pozwolenie=$1
+liczba_arg=$#
+if [[ $# -lt 2 || $# -gt 4 ]];then echo "ERROR - podano zła liczbe argumentow" >&2; exit 1;fi
+if [[ ! $pozwolenie =~ ^[0-7][0-7][0-7]$ ]];then echo "ERROR - Podano zly pierwszy argument" >&2;exit 1;fi
+shift
+
+for arg in $@
+do
+        if [[ ! $arg =~ ^[ldf]$ ]];then echo "ERROR - zle argumenty pozwolenia" >&2;exit 1;fi
+
+done
+
+links=`find -name '[!.]*' -type l`
+directory=`find -name '[!.]*' -type d`
+files=`find -name '[!.]*' -type f`
+
+for arg in $@
+do
+	case $arg in
+		f)
+			`chmod $pozwolenie $files`
+			;;
+		l)
+			`chmod $pozwolenie $links`
+			;;
+		d)
+			`chmod $pozwolenie $directory`
+	esac
+done

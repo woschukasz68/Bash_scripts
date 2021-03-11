@@ -1,0 +1,65 @@
+#!/bin/bash
+#author Lukasz Rozylo
+
+count_loop=$(( $#/3 ))
+if [[ $# -lt 3 ]];then echo"ERROR - za malo argumentow" >&2;exit 1;fi
+if [[ ! $1 =~ ^(bash|sh|zsh)$ ]]; then echo "ERROR - argument powloki nie jest poprawny" >&2; exit 1;fi
+if [[ ! $2 =~ ^(domN|domT)$ ]];then echo "ERROR argument powstania katalogu jest nie poprawny" >&2; exit 1;fi
+powloka=$1
+katalog=$2
+number_user=$(( $#-2 ))
+shift 2
+for user in $@
+do
+
+
+	 case $katalog in
+                domT)
+                        case $powloka in
+                                bash)
+                                         sudo useradd -m  -s /bin/bash -c `date +%Y/%m/%d`  $user
+					 sudo passwd $user
+                                        ;;
+                                sh)
+                                         sudo useradd -m -s /bin/sh -c `date +%Y/%m/%d` $user
+				         sudo passwd $user
+                                        ;;
+                                zsh)
+                                         sudo useradd -m -s /bin/zsh -c `date +%Y/%m/%d` $user
+					 sudo passwd $user
+                        esac
+
+                        ;;
+                domN)
+                        case $powloka in
+                                bash)
+                                         sudo useradd -M -s /bin/bash -c `date +%Y/%m/%d` $user
+					 sudo passwd $user
+                                        ;;
+                                sh)
+                                         sudo useradd -M -s /bin/sh -c `date +%Y/%m/%d` $user
+					 sudo passwd $user
+                                        ;;
+                                zsh)
+                                         sudo useradd -M -s /bin/zsh -c `date +%Y/%m/%d` $user
+              		                 sudo passwd $user
+       			 esac
+	 
+	 esac
+done
+
+if [[ ! -e plik_logow  ]]
+then
+	touch plik_logow
+	for user in $@
+	do
+	echo `grep $user /etc/passwd | cut -d : -f1,5`>> plik_logow
+	done
+else
+
+	for user in $@
+        do
+        echo `grep $user /etc/passwd | cut -d : -f1,5`>> plik_logow
+	done
+fi
+exit 0

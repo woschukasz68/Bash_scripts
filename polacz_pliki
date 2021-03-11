@@ -1,0 +1,45 @@
+#!/bin/bash
+#author Lukasz Rozylo
+
+if [[ $# -lt 2 ]]; then
+	echo "ERROR - podano nie poprawna liczbe argumentow"
+	exit 1
+fi
+# nazwa pliku do ktorego sa zapisywane pliki
+plik_in=$1
+shift
+for plik in "$@"
+do
+	if [[ ! -e $plik ]];then
+		echo "ERROR - plik \"$plik\" nie istniej" >&2
+		exit 1
+	fi
+
+	if [[ ! -s  $plik ]]; then
+		echo "ERROR - plik \"$plik\" jest pusty" >&2
+		exit 1
+	fi
+
+	if [[ ! -f $plik ]]; then echo "ERROR - plik \"$plik\" nie jest zwykly" >&2;exit 1;fi
+
+	if [[ ! -r $plik ]];then echo "ERROR - plik \"$plik\" nie ma prawa odczytu" >&2;exit 1;fi
+
+done
+
+# stworzenie pliku docelowego jesli go nie ma
+if [[ ! -e $plik_in ]];then
+	`touch $plik_in`
+	`chmod u+w $plik_in`
+else
+	if [[ ! -w $plik_in ]];then
+		echo "ERROR - nie mozna zapisac do pliku docelowego"
+		exit 1
+	fi
+fi
+
+#wcytywanie plikow do pliku docelowego
+for wczyt in "$@"
+do
+	 `cat $wczyt>>$plik_in`
+done
+exit 0
